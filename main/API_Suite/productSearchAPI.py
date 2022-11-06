@@ -3,7 +3,7 @@ import time
 import os
 
 url = "https://target-com-shopping-api.p.rapidapi.com/product_search"
-rapidKey = '930401d6a5mshe61534d11163938p1ecd97jsn6a9d82d02d3d'
+rapidKey = 'null'
 
 def productSearch(store_id, keyword, offset, count):
 	inputquerystring = {"store_id":store_id,"keyword":keyword,"offset":offset,"count":count}
