@@ -125,17 +125,15 @@ def training_the_model(train_ds, val_ds):
     model.fit(
         train_ds,
         validation_data=val_ds,
-        epochs=3
+        epochs=5
         )
 
-    print(model.build())
-
-
-
+def custom_training_model():
+    print("hello")
 flower = input("what flower would you like to find?: ")
 
 count = obtain_image_count(flower)
-#display_image('roses')
+display_image(flower)
 
 print("There are {} {} images".format(count, flower))
 
