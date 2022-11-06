@@ -6,6 +6,7 @@ import pathlib
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import tensorflow_datasets as tfds
+from keras.utils.vis_utils import plot_model
 
 #print(tf.__version__)
 dataset_url = "https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
@@ -19,6 +20,8 @@ batch_size = 32
 img_height = 180
 img_width = 180
 
+iteration_count = 3
+
 
 
 
@@ -30,7 +33,7 @@ def display_image(flower_name):
     #error check flower_name input
     #valid flowers are: 
         #
-    if (flower_name == 'roses' or flower_name == 'tulips'):
+    if (flower_name == 'roses' or flower_name == 'tulips' or flower_name == 'daisy' or flower_name == 'dandelion' or flower_name == 'sunflowers'):
         print("obtaining {} images\n".format(flower_name))
         flower = list(data_dir.glob(flower_name+'/*'))
         image = PIL.Image.open(str(flower[0]))
@@ -74,10 +77,7 @@ def vizualize_data(classnames, train_ds, validation_ds):
         for i in range(9):
             ax = plt.subplot(3, 3, i + 1)
             plt.imshow(images[i].numpy().astype("uint8"))
-            print("Labels List is: {}".format(labels))
-            label = labels[i]
-            print("LABEL IS: {}".format(label))
-            plt.title(classnames[label])
+            plt.title(classnames[labels[i]])
             plt.axis("off")
 
     for image_batch, labels_batch in train_ds:
@@ -125,12 +125,13 @@ def training_the_model(train_ds, val_ds):
     model.fit(
         train_ds,
         validation_data=val_ds,
-        epochs=5
+        epochs=iteration_count
         )
 
-def custom_training_model():
-    print("hello")
+    plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+
 flower = input("what flower would you like to find?: ")
+iteration_count = (int)(input("How many iterations for learning algorithm?: "))
 
 count = obtain_image_count(flower)
 display_image(flower)
@@ -140,5 +141,5 @@ print("There are {} {} images".format(count, flower))
 training_set = data_set_training()
 validation_set = data_set_validation()
 classnames = class_names(training_set)
-vizualize_data(classnames, training_set, validation_set)
+#vizualize_data(classnames, training_set, validation_set)
 training_the_model(training_set, validation_set)
