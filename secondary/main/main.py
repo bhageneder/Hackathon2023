@@ -3,10 +3,13 @@ import os
 import PIL
 import PIL.Image
 import pathlib
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from keras.utils.vis_utils import plot_model
+from matplotlib import pyplot as plt
+
+credits = "https://www.tensorflow.org/api_docs/python/tf/keras/utils/plot_model" 
+#for skeleton code and base algorithm
 
 #print(tf.__version__)
 dataset_url = "https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
@@ -71,19 +74,23 @@ def class_names(train_ds):
     print(class_names)
     return class_names
 
-def vizualize_data(classnames, train_ds, validation_ds):
-    plt.figure(figsize=(10, 10))
-    for images, labels in train_ds.take(1):
-        for i in range(9):
-            ax = plt.subplot(3, 3, i + 1)
-            plt.imshow(images[i].numpy().astype("uint8"))
-            plt.title(classnames[labels[i]])
-            plt.axis("off")
+def vizualize_data(history):
 
-    for image_batch, labels_batch in train_ds:
-        print(image_batch.shape)
-        print(labels_batch.shape)
-        break
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.show()
+
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.show()
 
 def training_the_model(train_ds, val_ds):
     normalization_layer = tf.keras.layers.Rescaling(1./255)
@@ -122,13 +129,16 @@ def training_the_model(train_ds, val_ds):
         metrics=['accuracy'])
 
     #fit it to a standardized model
-    model.fit(
+    data = model.fit(
         train_ds,
         validation_data=val_ds,
         epochs=iteration_count
         )
 
-    plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+    #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+
+    return data
+
 
 flower = input("what flower would you like to find?: ")
 iteration_count = (int)(input("How many iterations for learning algorithm?: "))
@@ -142,4 +152,5 @@ training_set = data_set_training()
 validation_set = data_set_validation()
 classnames = class_names(training_set)
 #vizualize_data(classnames, training_set, validation_set)
-training_the_model(training_set, validation_set)
+returned_data = training_the_model(training_set, validation_set)
+vizualize_data(returned_data)
